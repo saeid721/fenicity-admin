@@ -1,0 +1,4 @@
+<?php
+namespace App\Http\Controllers\Admin;
+use App\Http\Controllers\Controller; use App\Models\User; use Illuminate\Http\Request; use Illuminate\Support\Facades\Auth; use Illuminate\Support\Facades\Hash;
+class AuthController extends Controller { public function show(){return view('admin.auth.login');} public function login(Request $request){$data=$request->validate(['email'=>'required|email','password'=>'required|string']);if(!Auth::attempt(['email'=>$data['email'],'password'=>$data['password'],'status'=>'active'])) return back()->withErrors(['email'=>'Invalid administrator credentials.'])->withInput();$request->session()->regenerate();$u=$request->user();abort_unless($u->hasRole('admin')||$u->hasRole('super-admin')||$u->hasRole('contributor'),403);return redirect()->intended('/admin');} public function logout(Request $request){Auth::logout();$request->session()->invalidate();$request->session()->regenerateToken();return redirect('/admin/login');}}

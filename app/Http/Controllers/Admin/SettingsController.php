@@ -1,0 +1,2 @@
+<?php namespace App\Http\Controllers\Admin; use App\Http\Controllers\Controller; use App\Models\Setting; use Illuminate\Http\Request;
+class SettingsController extends Controller {public function index(){return view('admin.settings.index',['items'=>Setting::orderBy('key')->get()]);}public function update(Request $r){$d=$r->validate(['settings'=>'array']);foreach($d['settings']??[] as $key=>$value)Setting::where('key',$key)->update(['value'=>is_array($value)?json_encode($value,JSON_UNESCAPED_UNICODE):$value]);return back()->with('success','Settings updated.');}}
